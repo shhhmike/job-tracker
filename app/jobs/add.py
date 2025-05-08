@@ -10,7 +10,7 @@ pg_user_name = os.getenv("POSTGRES_USER")
 def add_job(new_posting: JobPosting):
     con, cur = init_db_client()
 
-    logger.info(f"[DB]: Adding job: {new_posting.company}, {new_posting.title}, {new_posting.date_applied}")
+    click.echo(f"[DB]: Adding job: {new_posting.company}, {new_posting.title}, {new_posting.date_applied}")
 
     add_job_query = f"""
         INSERT INTO job_applications_{pg_user_name} 
