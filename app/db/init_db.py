@@ -16,6 +16,9 @@ def init():
     try:
         # Connect to the 'postgres' database to create a new database
         con, cur = init_db_client('postgres')
+        if con is None or cur is None:
+            click.echo("Failed to connect to 'postgres'. Exiting...")
+            return  # Stop early
 
         # Create the database (if it doesn't exist)
         try:
@@ -27,10 +30,13 @@ def init():
             click.echo(f"Database '{db_name}' already exists.")
 
         # Close connection to 'postgres'
-        con.close()  
+        con.close()
 
-        # Reconnect to 'jobtracker' DB
+        # Reconnect to the new database
         con, cur = init_db_client(name=db_name)
+        if con is None or cur is None:
+            click.echo(f"Failed to connect to '{db_name}'. Exiting...")
+            return
 
         # Create a table for the user
         try:
@@ -56,8 +62,10 @@ def init():
                 cur.close()
             if con:
                 con.close()
+
     except Exception as e:
-        click.echo(f"Error while connecting to PostgreSQL: {e}")
+        click.echo(f"Error while initializing database: {e}")
 
 if __name__ == '__main__':
     init()
+

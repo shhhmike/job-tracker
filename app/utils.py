@@ -14,7 +14,6 @@ db_name = "jobtracker"
 def init_db_client(name=db_name, pg_user=pg_user_name, host='localhost', pg_pass=pg_password):
     """
     Initializes and returns a connection + cursor to a PostgreSQL database.
-    Defaults to 'jobtracker' if no DB name is provided.
     """
     try:
         con = psycopg2.connect(
@@ -26,7 +25,9 @@ def init_db_client(name=db_name, pg_user=pg_user_name, host='localhost', pg_pass
         con.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
         cur = con.cursor()
     except Exception as e:
-        click.serror(f"Failed to connect to database '{name}': {e}", fg="red")
-    finally:
+        click.secho(f"Failed to connect to database '{name}': {e}", fg="red")
+        return None, None 
+    else:
         click.secho(f"Successfully connected to database: {name}", fg="green")
         return con, cur
+
